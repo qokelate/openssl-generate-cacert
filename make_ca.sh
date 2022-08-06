@@ -5,6 +5,7 @@
 
 set -ex
 
+info='none'
 domain='*.google.com'
 [ -n "$1" ] && domain="$1"
 
@@ -23,13 +24,13 @@ openssl genrsa -out ./demoCA/private/cakey.pem 2048
 # openssl ca -selfsign -in careq.pem -out ./demoCA/cacert.pem
 
 # 以上两步可以合二为一
-openssl req -subj "/C=CN/ST=$domain/L=$domain/O=$domain/OU=$domain/CN=$domain/emailAddress=$RANDOM@$RANDOM.com" -new -x509 -days 3650 -key ./demoCA/private/cakey.pem -out ./demoCA/cacert.pem
+openssl req -subj "/C=CN/ST=$info/L=$info/O=$info/OU=$info/CN=$info/emailAddress=$RANDOM@$RANDOM.com" -new -x509 -days 3650 -key ./demoCA/private/cakey.pem -out ./demoCA/cacert.pem
 
 # 生成用户的 RSA 密钥对
 openssl genrsa -out userkey.pem
 
 # 生成用户证书请求
-openssl req -subj "/C=CN/ST=$domain/L=$domain/O=$domain/OU=$domain/CN=$domain/emailAddress=$RANDOM@$RANDOM.com" -new -key userkey.pem -out userreq.pem
+openssl req -subj "/C=CN/ST=$info/L=$info/O=$info/OU=$info/CN=$domain/emailAddress=$RANDOM@$RANDOM.com" -new -key userkey.pem -out userreq.pem
 
 # 使用 CA 签发用户证书
 openssl ca -batch -in userreq.pem -out usercert.pem
