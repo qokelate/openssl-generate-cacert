@@ -35,7 +35,7 @@ openssl req -subj "/C=CN/ST=$domain/L=$domain/O=$domain/OU=$domain/CN=$domain/em
 openssl ca -batch -in userreq.pem -out usercert.pem
 
 set +ex
-realpath userreq.pem
+realpath userkey.pem
 realpath usercert.pem
 
 exit
