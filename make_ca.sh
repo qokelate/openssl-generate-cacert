@@ -27,14 +27,23 @@ if [ ! -f "./demoCA/cacert.pem" ]; then
 	# openssl ca -selfsign -in careq.pem -out ./demoCA/cacert.pem
 
 	# 以上两步可以合二为一
-	openssl req -subj "/C=CN/ST=$info/L=$info/O=$info/OU=$info/CN=$info/emailAddress=$RANDOM@$RANDOM.com" -new -x509 -days 3650 -key ./demoCA/private/cakey.pem -out ./demoCA/cacert.pem
+	openssl req \
+	-subj "/C=CN/ST=$info/L=$info/O=$info/OU=$info/CN=$info/emailAddress=$RANDOM@$RANDOM.com" \
+	-new -x509 -days 3650 -key ./demoCA/private/cakey.pem -out ./demoCA/cacert.pem
+
+	# 输出CA密钥对
+	mkdir ./demoCA/output
+	cp -fv ./demoCA/private/cakey.pem ./demoCA/output/cacert.key
+	cp -fv ./demoCA/cacert.pem ./demoCA/output/cacert.pem
 fi
 
 # 生成用户的 RSA 密钥对
 openssl genrsa -out "userkey_$suffix.pem"
 
 # 生成用户证书请求
-openssl req -subj "/C=CN/ST=$info/L=$info/O=$info/OU=$info/CN=$domain/emailAddress=$RANDOM@$RANDOM.com" -new -key "userkey_$suffix.pem" -out "userreq_$suffix.pem"
+openssl req \
+-subj "/C=CN/ST=$info/L=$info/O=$info/OU=$info/CN=$domain/emailAddress=$RANDOM@$RANDOM.com" \
+-new -key "userkey_$suffix.pem" -out "userreq_$suffix.pem"
 
 # 使用 CA 签发用户证书
 openssl ca -config openssl.cnf -batch -in "userreq_$suffix.pem" -out "usercert_$suffix.pem"
